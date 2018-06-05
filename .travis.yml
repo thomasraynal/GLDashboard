@@ -1,16 +1,8 @@
-env:
-  environment:
-    - CC_TEST_REPORTER_ID=56a233f0c60e98c4d26137922619516642b5fe2dbbe668243bcb9122b0f66d67
 
 language: node_js
-
-dist: trusty
 
 node_js:
 - "8"
 
-after_success:
-  - npm install -g codeclimate-test-reporter
-  - codeclimate-test-reporter < coverage/lcov.info
-
-sudo: false
+after_script:
+  - coveralls < coverage/lcov.info
