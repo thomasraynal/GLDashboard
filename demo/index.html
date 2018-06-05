@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="fr" ng-app="glDashboard">
+
+<head>
+    <title>{{appTitle}}</title>
+    <link rel="icon" type="image/png" href="assets/icon.ico" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+    <!-- build:css -->
+    <link rel="stylesheet" type="text/css" href="vendor/goldenlayout-base.css" />
+    <link rel="stylesheet" type="text/css" href="vendor/goldenlayout-light-theme.css" />
+    <link rel="stylesheet" type="text/css" href="css/gl-dashboard.min.css" />
+    <link rel="stylesheet" type="text/css" href="vendor/dx.spa.css" />
+    <link rel="stylesheet" type="text/css" href="vendor/dx.common.css" />
+    <link rel="dx-theme" data-theme="generic.light.compact" type="text/css" href="vendor/dx.light.compact.css" />
+    <!-- endbuild -->
+</head>
+
+<body class="dx-viewport">
+    <div ng-view></div>
+</body>
+<!-- build:js -->
+<script src="vendor/jquery-3.1.1.min.js"></script>
+<script src="vendor/script.min.js"></script>
+<script src="vendor/FileSaver.min.js"></script>
+<script src="vendor/goldenlayout.min.js"></script>
+<script src="vendor/angular.min.js"></script>
+<script src="vendor/angular-route.min.js"></script>
+<script src="vendor/lodash.min.js"></script>
+<script src="vendor/dx.viz-web.js"></script>
+<script src="js/gl-dashboard.min.js"></script>
+<script src="app.js"></script>
+<script src="plugins/infra/service-layout-demo.js"></script>
+<script src="plugins/infra/factory-layout-demo.js"></script>
+<script src="plugins/infra/service-widget-demo.js"></script>
+<!-- endbuild -->
+
+</html>

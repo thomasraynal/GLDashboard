@@ -1,0 +1,78 @@
+<div ng-class="{disable: isLoading}" id="workspace">
+
+    <div id="workspaceContainer" class="w_container"></div>
+        <div class="w_menu" id="workspaceMenu" style="border:none">
+        <a style="color: transparent!important;" ng-href="#/"><img style="margin-left:0px" class="menu-item" src={{appIcon}}></img>
+        </a>
+        <div class="menu-item-align">{{appName}}</div>
+        <div class="menu-item-align">v.{{appVersion}}</div>
+        <div class="menu-item-align">{{fund}}</div>
+        <div class="menu-item" dx-menu="widgetMenuOptions"></div>
+        <div class="menu-item" dx-menu="actionMenuOptions"></div>
+        <div class="menu-item" dx-menu="screenMenuOptions"></div>
+        <div class="menu-item" dx-button="saveLayoutDefaultButtonOptions"></div>
+        <div class="menu-item" dx-button="saveLayoutTagButtonOptions"></div>
+        <div class="menu-item" dx-button="saveLayoutAsScreenOrActionButtonOptions"></div>
+        <div class="menu-item" dx-button="layoutManagementButtonOptions"></div>
+        <div class="icon-menu-item" dx-button="deleteDefaultLayoutButtonOptions"></div>
+    </div>
+    <div id="layoutManagementPopup" class="popup" dx-popup="namedLayoutManagementPopupOptions">
+        <div data-options="dxTemplate: { name:'info' }">
+            <div>
+                <div id="layoutManagementList" dx-tree-view="layoutManagementTreeViewOptions"></div>
+                <div style="margin-top:20px;" style="width:100%;">
+                    <div style="float:left;width:45%;" dx-button="loadLayoutButtonOptions"></div>
+                    <div style="float:right;width:45%;" dx-button="deleteLayoutButtonOptions"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="layoutManagementPopup" class="popup" dx-popup="layoutManagementPopupOptions">
+        <div data-options="dxTemplate: { name:'info' }">
+            <div class="dx-fieldset">
+                <div class="dx-fieldset-header">Create or load a named layout</div>
+                <div class="dx-field">
+                    <div style="width:100%;min-height:30px;margin-top: 5px;">
+                        <div style="float:left;width:35%;" dx-text-box="textBoxNewLayoutOptions"></div>
+                        <div style="float:left;width:23%;margin:0px 0px 0px 5px;" dx-button="saveLayoutAsScreenButtonOptions"></div>
+                        <div style="float:left;width:20%;margin:0px 0px 0px 5px;" dx-button="saveLayoutAsActionButtonOptions"></div>
+                        <div style="float:left;width:20%;margin:0px 0px 0px 5px;" dx-button="namedLayoutManagementButtonOptions"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="dx-fieldset">
+                <div class="dx-fieldset-header">Create or load a serialized layout</div>
+                <div class="dx-field">
+                    <div style="width:100%;min-height:30px;margin-top: 5px;">
+                        <div style="float:left;width:45%;margin:0px 5px 0px 0px;" dx-button="saveLayoutAsFileButtonOptions"></div>
+                        <div style="float:left;width:45%;margin-top: -7px;" class="menu-item" id="loadLayoutFromFileInput" dx-file-uploader="loadLayoutFromFileUploadOptions"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="popup" dx-popup="errorPopup">
+        <div data-options="dxTemplate: { name:'info' }">
+            <div class="dx-fieldset">
+                <div class="dx-field">
+                    <div class="dx-field-label">Type</div>
+                    <div class="dx-field-value">
+                        {{currentError.status}}
+                    </div>
+                </div>
+                <div class="dx-field">
+                    <div class="dx-field-label">Message</div>
+                    <div class="dx-field-value">
+                        {{currentError.message}}
+                    </div>
+                </div>
+                <div class="dx-field">
+                    <div class="dx-field-label">Detail</div>
+                    <div class="dx-field-value">
+                        <div dx-text-area="errorDetails"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
