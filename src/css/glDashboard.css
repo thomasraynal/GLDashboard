@@ -3,7 +3,7 @@
     opacity: 0.5;
 }
 
-.w_container {
+.w_container { 
     z-index: 0;
 }
 
@@ -17,6 +17,7 @@
     left: 0;
     width: auto !important;
     background: white;
+    border:none;
 }
 
 .w_menu .menu-item {

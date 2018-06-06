@@ -54,7 +54,7 @@ describe('glDashboard', function() {
 
     beforeEach(module('glDashboard'));
 
-    beforeEach(inject(function(_$rootScope_, _$timeout_, _$routeParams_, _$httpBackend_, $templateCache, $q, $compile, _states_, categories) {
+    beforeEach(inject(function(_$rootScope_, _$timeout_, _$routeParams_, _$httpBackend_, $templateCache, $templateRequest, $q, $compile, _states_, categories) {
 
         window.layoutRepository = [];
 
@@ -71,14 +71,16 @@ describe('glDashboard', function() {
 
         $httpBackend.when('GET', 'widgets.json').respond(200, widgets);
 
+        $templateCache.put('plugins/html/view.menu.html', '<div class="w_menu" id="workspaceMenu">    <workspace-menu-app-name></workspace-menu-app-name>    <workspace-menu-widgets></workspace-menu-widgets>    <workspace-menu-actions-and-screens></workspace-menu-actions-and-screens>    <workspace-menu-layout-save></workspace-menu-layout-save>    <workspace-menu-layout-save-screen-or-action></workspace-menu-layout-save-screen-or-action>    <workspace-menu-layout-management></workspace-menu-layout-management>    <workspace-menu-layout-clear></workspace-menu-layout-clear></div>');
         $templateCache.put('plugins/html/test1-module.html', '<div  id="test1"></div>');
         $templateCache.put('plugins/html/test2-module.html', '<div  id="test2"></div>');
 
-        var workspaceElement = $compile('<div ng-controller="workspace"><div id="workspaceContainer"></div></div>')($rootScope);
+        var workspaceElement = $compile('<div ng-controller="workspace"><div id="workspaceContainer" class="w_container"></div><workspace-menu></workspace-menu></div>')($rootScope);
         $rootScope.worskspaceScope = angular.element(workspaceElement[0]).scope();
         $rootScope.worskspaceScope.$workspaceContainer = workspaceElement.find("#workspaceContainer")
 
         render();
+        wait(1000);
 
         $httpBackend.flush();
 

@@ -56,7 +56,7 @@ module.exports = function(config) {
                 { type: "html", subdir: "html" },
                 { type: 'text-summary' },
                 { type: 'lcovonly', subdir: '.' },
-                { type: 'json', subdir: '.' }
+
             ]
         }
     });

@@ -17,30 +17,16 @@ glDashboard.controller('workspace', function appCrtl(
 
     $scope.context;
 
-    $scope.actions = [];
-    $scope.screens = [];
-
+    $scope.onInitializedHandlers = [];
     $scope.isLoading = false;
-
     $scope.$workspaceContainer = $("#workspaceContainer");
-
     $scope.isFullScreen;
-
     $scope.showNamedLayoutManagement = false;
-    $scope.showlayoutManagement = false;
     $scope.showCurrentUser = false;
-    $scope.isSaveCustomLayoutDisabled;
     $scope.isSaveLayoutDefaultDisabled;
-    $scope.isLayoutManagementDisabled;
-    $scope.isDeleteLayoutDisabled;
-    $scope.newLayoutName = '';
-    $scope.selectedLayout;
     $scope.availableWidgets = [];
-    $scope.availableLayouts = [];
-
     $scope.showErrorPopup = false;
     $scope.currentError;
-
     $scope.saveContextAsScreenOrActionVisible = false;
     $scope.saveContextAsScreenOrActionLabel = null;
 
@@ -82,15 +68,6 @@ glDashboard.controller('workspace', function appCrtl(
         $scope.saveContextAsScreenOrActionVisible = null != $scope.saveContextAsScreenOrActionLabel;
     });
 
-    $scope.$watch('newLayoutName', function() {
-        $scope.isSaveLayoutDisabled = OneDashboard.isUndefinedOrNull($scope.newLayoutName) || $scope.newLayoutName == '';
-    });
-
-    $scope.$watch('selectedLayout', function() {
-        $scope.isLayoutManagementDisabled = $scope.selectedLayout == null;
-        $scope.isDeleteLayoutDisabled = $scope.isLayoutManagementDisabled || $scope.selectedLayout.isDefault;
-    });
-
     $scope.$on("$destroy", function() {
         $scope.goldenLayout.destroy();
     });
@@ -107,220 +84,8 @@ glDashboard.controller('workspace', function appCrtl(
         }
     };
 
-    $scope.actionMenuOptions = {
-        bindingOptions: {
-            dataSource: 'actions'
-        },
-        hideSubmenuOnMouseLeave: true,
-        displayExpr: "name",
-        onItemClick: loadScreenOrAction
-    };
-
-    $scope.screenMenuOptions = {
-        bindingOptions: {
-            dataSource: 'screens'
-        },
-        hideSubmenuOnMouseLeave: true,
-        displayExpr: "name",
-        onItemClick: loadScreenOrAction
-    };
-
-    $scope.textBoxNewLayoutOptions = {
-        bindingOptions: { value: 'newLayoutName' },
-        showClearButton: true,
-        placeholder: "Enter layout name...",
-        onInput: function(e) {
-            $scope.newLayoutName = e.component._options.text;
-        }
-    };
-
-    $scope.saveLayoutDefaultButtonOptions = {
-        icon: 'floppy',
-        bindingOptions: {
-            text: 'context.layoutKey',
-            disabled: 'isSaveLayoutDefaultDisabled'
-        },
-        onClick: saveLayoutAsDefault
-    };
-
-    $scope.saveLayoutTagButtonOptions = {
-        icon: 'floppy',
-        bindingOptions: {
-            text: 'context.layoutCategory'
-        },
-        onClick: saveLayoutAsDefaultForCategory
-    };
-
-    $scope.deleteDefaultLayoutButtonOptions = {
-        icon: 'remove',
-        hint: 'Clear Layout',
-        onClick: function(e) {
-
-            changeContext()
-                .then(initGoldenLayout)
-        }
-    };
-
-    $scope.saveLayoutAsScreenOrActionButtonOptions = {
-        icon: 'floppy',
-        bindingOptions: {
-            text: 'saveContextAsScreenOrActionLabel',
-            visible: 'saveContextAsScreenOrActionVisible'
-        },
-        onClick: function(e) {
-            saveLayout($scope.context.layoutKey, $scope.context.layoutKey, $scope.context.isScreen, $scope.context.isAction);
-        }
-    };
-
-    $scope.saveLayoutAsScreenButtonOptions = {
-        icon: 'floppy',
-        text: 'Save As Screen',
-        bindingOptions: {
-            disabled: 'isSaveLayoutDisabled'
-        },
-        onClick: function(e) {
-            saveLayout($scope.newLayoutName, $scope.context.layoutKey, true, false)
-                .then(() => {
-                    $scope.showlayoutManagement = false;
-
-                })
-
-        }
-    };
-
-    $scope.saveLayoutAsActionButtonOptions = {
-        icon: 'floppy',
-        text: 'Save As Action',
-        bindingOptions: {
-            disabled: 'isSaveLayoutDisabled'
-        },
-        onClick: function(e) {
-            saveLayout($scope.newLayoutName, $scope.context.layoutKey, false, true)
-                .then(() => {
-                    $scope.showlayoutManagement = false;
-                })
-        }
-    };
-
-    $scope.loadLayoutButtonOptions = {
-        icon: 'upload',
-        text: 'Load',
-        bindingOptions: {
-            disabled: 'isLayoutManagementDisabled'
-        },
-        onClick: function(e) {
-            changeLayout($scope.selectedLayout.text)
-        }
-    };
-
-    $scope.deleteLayoutButtonOptions = {
-        icon: 'trash',
-        text: 'Delete',
-        bindingOptions: {
-            disabled: 'isDeleteLayoutDisabled'
-        },
-        onClick: function(e) {
-            deleteLayout($scope.selectedLayout.text)
-        }
-    };
-
-    $scope.namedLayoutManagementButtonOptions = {
-        icon: 'folder',
-        text: 'Show Saved Layouts',
-        onClick: function(e) {
-            $scope.selectedLayout = null;
-            createLayoutManagementMenu();
-        }
-    };
-
-    $scope.saveLayoutAsFileButtonOptions = {
-        icon: 'floppy',
-        text: 'Save As File',
-        onClick: function(e) {
-            var layout = JSON.stringify($scope.goldenLayout.toConfig());
-            var key = ($scope.context.layoutKey) ? $scope.context.layoutKey + "_" + $scope.context.layoutCategory : $scope.context.layoutCategory;
-            new Save(key, ".layout", layout);
-            $scope.showlayoutManagement = false;
-        }
-    };
-
-    $scope.loadLayoutFromFileUploadOptions = {
-        icon: 'upload',
-        selectButtonText: "Load From File",
-        labelText: "",
-        accept: ".layout",
-        uploadMode: "instantly",
-        onValueChanged: function(e) {
-
-            if (e.value.length == 0) return;
-
-            var file = e.value[0];
-
-            var reader = new FileReader();
-
-            reader.onload = (e) => {
-                var uploader = $('#loadLayoutFromFileInput').dxFileUploader('instance');
-                var layout = JSON.parse(e.target.result);
-
-                $scope.context.layout = layout;
-
-                initGoldenLayout()
-                    .then(() => {
-                        uploader.reset();
-                    })
-
-            };
-
-            reader.readAsBinaryString(file);
-
-            $scope.showlayoutManagement = false;
-
-        }
-    };
-
-    $scope.layoutManagementTreeViewOptions = {
-        bindingOptions: {
-            items: 'availableLayouts'
-        },
-        height: 500,
-        onItemClick: function(e) {
-
-            if (null == e.itemData || e.itemData.isCategory) return;
-            $scope.selectedLayout = e.itemData;
-        }
-    };
-
-    $scope.namedLayoutManagementPopupOptions = {
-        contentTemplate: "info",
-        width: 300,
-        showTitle: true,
-        title: 'Available Layouts',
-        dragEnabled: false,
-        closeOnOutsideClick: true,
-        bindingOptions: {
-            visible: "showNamedLayoutManagement"
-        }
-    };
-
-    $scope.layoutManagementButtonOptions = {
-        icon: 'image',
-        hint: 'Show Layout Management Panel',
-        onClick: function(e) {
-            $scope.showlayoutManagement = true;
-        }
-    };
-
-    $scope.layoutManagementPopupOptions = {
-        contentTemplate: "info",
-        width: 800,
-        height: 300,
-        showTitle: true,
-        title: 'Layout Management',
-        dragEnabled: false,
-        closeOnOutsideClick: true,
-        bindingOptions: {
-            visible: "showlayoutManagement"
-        }
+    $scope.onInitialized = (action) => {
+        $scope.onInitializedHandlers.push(action);
     };
 
     $scope.doUiWork = (action, callback) => {
@@ -345,20 +110,16 @@ glDashboard.controller('workspace', function appCrtl(
 
     function initialize() {
 
-        $scope.$workspaceContainer.height($(window).height());
-        $scope.$workspaceContainer.width($(window).width());
-
         $timeout(() => {
 
             var init = disable();
             init
+                .then(setUp)
                 .then(setEventHooks)
                 .then(changeContext)
-                .then(createWidgetMenu)
-                .then(createActionMenu)
-                .then(createScreenMenu)
                 .then(loadPlugins)
                 .then(createWorkspace)
+                .then(finalize)
                 .then(enable)
                 .catch(err => {
                     $log.error(err);
@@ -380,6 +141,36 @@ glDashboard.controller('workspace', function appCrtl(
         return $timeout(() => {
             $scope.isLoading = false;
         });
+    };
+
+    function setUp() {
+        $scope.$workspaceContainer.height($(window).height());
+        $scope.$workspaceContainer.width($(window).width());
+
+        return createPromise();
+    };
+
+    function finalize() {
+
+        var promises = _.transform($scope.onInitializedHandlers, (aggregate, action) => {
+
+            var promise = action
+
+            if (!action.then) {
+                promise = createPromise(action);
+            }
+
+            aggregate.push(promise);
+
+        }, []);
+
+        return $q
+            .all(promises)
+            .catch(err => {
+                $scope.currentError = error.createError(err);
+                $scope.showErrorPopup = true;
+                enable();
+            });
     };
 
     function workspaceComponentFactory(container, state) {
@@ -419,38 +210,33 @@ glDashboard.controller('workspace', function appCrtl(
         $scope.goldenLayout.registerComponent('angularModule', workspaceComponentFactory);
         $scope.goldenLayout.init();
 
-        $scope.goldenLayout.eventHub.on(events.layoutChanged, function(date) {
-            createWidgetMenu();
-            createActionMenu();
-            createScreenMenu();
-        });
 
         return createPromise();
     };
 
     function createWorkspace() {
 
-        $scope
+        return $scope
             .doUiWork(getDefaultLayout())
             .then((keyLayout) => {
 
                 if (OneDashboard.isUndefinedOrNull(keyLayout)) {
 
-                    $scope
+                    return $scope
                         .doUiWork(getLayoutByCategory())
                         .then((categoryLayout) => {
-                            setUpWorkspace(categoryLayout);
+                            return setUpWorkspace(categoryLayout);
                         });
 
                 } else {
-                    setUpWorkspace(keyLayout);
+                    return setUpWorkspace(keyLayout);
                 }
             });
     };
 
     function setUpWorkspace(context) {
 
-        changeContext(context)
+        return changeContext(context)
             .then(initGoldenLayout)
             .then(() => {
 
@@ -480,216 +266,6 @@ glDashboard.controller('workspace', function appCrtl(
                 });
 
                 return $q.all(pluginLoader);
-            });
-    };
-
-    function createLayoutManagementMenu() {
-
-        return layouts
-            .getAvailableLayouts()
-            .then((layouts) => {
-
-                var availableLayouts = _.transform(layouts, (aggregate, layout) => {
-
-                    var category = 'DEFAULT';
-
-                    if (layout.isAction) category = 'ACTION';
-                    if (layout.isScreen) category = 'MY SCREEN(S)';
-                    if (!layout.isAction && !layout.isScreen && !layout.isDefault) category = 'DEFAULT (USER)';
-                    if (!layout.isAction && !layout.isScreen && layout.isDefault) category = 'DEFAULT';
-
-                    aggregate.push({
-                        id: layout.layoutKey + layout.isAction + layout.isScreen + layout.isDefault,
-                        category: category,
-                        isDefault: layout.isDefault,
-                        text: OneDashboard.isUndefinedOrNull(layout.layoutKey) ? layout.layoutCategory : layout.layoutKey
-                    });
-
-                }, []);
-
-
-                $scope.availableLayouts = [{
-                    id: "0",
-                    text: "Available Layouts",
-                    isCategory: true,
-                    expanded: true,
-                    items: [{
-                        id: "1",
-                        text: 'MY SCREEN(S)',
-                        isCategory: true,
-                        expanded: false,
-                        items: _.filter(availableLayouts, (layout) =>
-                            layout.category == 'MY SCREEN(S)')
-                    }, {
-                        id: "2",
-                        text: 'ACTION',
-                        isCategory: true,
-                        expanded: false,
-                        items: _.filter(availableLayouts, (layout) =>
-                            layout.category == 'ACTION')
-                    }, {
-                        id: "3",
-                        text: 'DEFAULT (USER)',
-                        isCategory: true,
-                        expanded: false,
-                        items: _.filter(availableLayouts, (layout) =>
-                            layout.category == 'DEFAULT (USER)')
-                    }, {
-                        id: "4",
-                        text: 'DEFAULT',
-                        isCategory: true,
-                        expanded: false,
-                        items: _.filter(availableLayouts, (layout) =>
-                            layout.category == 'DEFAULT')
-                    }]
-                }];
-
-                $scope.showNamedLayoutManagement = true;
-            })
-            .catch((err) => {
-                $log.error(err);
-            })
-    };
-
-    function createMenu(widgets) {
-
-        var result = [];
-
-        var categories = _.transform(widgets, function(aggregate, widget) {
-            if (!_.find(aggregate, function(item) {
-                    return item === widget.category
-                })) {
-
-                if (widget.category != "") aggregate.push(widget.category);
-            }
-        }, []);
-
-        _.each(categories, function(category) {
-
-            var parentMenu = null;
-            var widgetCategories = category.split(';');
-            var hash = null;
-
-            _.each(widgetCategories, function(widgetcategory) {
-
-                hash = (null == hash) ? widgetcategory : hash + ';' + widgetcategory;
-
-                var isExistingMenu = null != _.find(result, function(menu) {
-                    return menu.name === widgetcategory;
-                });
-
-
-                if (OneDashboard.isUndefinedOrNull(parentMenu) && !isExistingMenu) {
-
-                    parentMenu = {
-                        name: widgetcategory,
-                        gl_template: null,
-                        type: 'category',
-                        disabled: false,
-                        config: null,
-                        items: []
-                    };
-
-                    result.push(parentMenu);
-
-                } else {
-
-                    var parent = null;
-
-                    if (!isExistingMenu) {
-
-                        parent = _.find(parentMenu.items, function(menu) {
-                            return menu.name === widgetcategory;
-                        });
-
-                        var menu = {
-                            name: widgetcategory,
-                            gl_template: null,
-                            type: 'category',
-                            disabled: false,
-                            config: null,
-                            items: []
-                        };
-
-                        if (null == parent) {
-                            parentMenu.items.push(menu);
-                        } else {
-                            parent.items.push(menu);
-                        }
-
-                        parentMenu = menu;
-
-                    } else {
-                        parentMenu = parent = _.find(result, function(menu) {
-                            return menu.name === widgetcategory;
-                        });
-                    }
-
-                }
-
-                var relevantWidgets = _.filter(widgets, function(widget) {
-                    return widget.category === hash;
-                });
-
-                _.each(relevantWidgets, function(widget) {
-
-                    if (!_.find(parentMenu.items, (item) => {
-                            return widget.name === item.name;
-                        })) {
-
-                        parentMenu.items.push({
-                            name: widget.name,
-                            gl_template: widget.template,
-                            type: 'widget',
-                            disabled: OneDashboard.isUndefinedOrNull($scope.context.layoutKey) && widget.isKeyBounded,
-                            config: widget.config == null ? {} : widget.config
-                        });
-                    }
-                });
-            });
-
-        });
-
-        return result;
-    };
-
-    function createWidgetMenu() {
-
-        return widgets
-            .getWidgets()
-            .then((widgets) => {
-                var menu = createMenu(widgets);
-                $scope.availableWidgets = [{
-                    name: 'Widgets',
-                    type: 'category',
-                    items: menu
-                }];
-            });
-    };
-
-    function createScreenMenu() {
-
-        return layouts
-            .getAvailableScreens()
-            .then((screens) => {
-                $scope.screens = [{
-                    name: 'Screens',
-                    type: 'category',
-                    items: _.transform(screens, (aggregate, screen) => aggregate.push({ name: screen.layoutKey, type: 'screen' }), [])
-                }];
-            });
-    };
-
-    function createActionMenu() {
-
-        return layouts
-            .getAvailableActions()
-            .then((actions) => {
-                $scope.actions = [{
-                    name: 'Actions',
-                    type: 'category',
-                    items: _.transform(actions, (aggregate, action) => aggregate.push({ name: action.layoutKey, type: 'action' }), [])
-                }];
             });
     };
 
@@ -734,41 +310,13 @@ glDashboard.controller('workspace', function appCrtl(
             });
     };
 
-    function loadScreenOrAction(data) {
-
-        if (data.itemData.type == 'category') return
-
-        changeLayout(data.itemData.name);
-    };
-
     function changeLayout(layoutKey) {
 
         $scope
             .doUiWork(layouts.getLayout(layoutKey))
             .then(changeContext)
-            .then(() => {
-
-                $scope.showNamedLayoutManagement = false;
-                $scope.showlayoutManagement = false;
-
-                $timeout(() => {
-                    initGoldenLayout();
-                }, 200);
-
-                return createPromise();
-
-            });
+            .then(initGoldenLayout);
     }
-
-    function deleteLayout(layoutKey) {
-
-        return $scope
-            .doUiWork(layouts.deleteLayout(layoutKey))
-            .then((result) => {
-                $scope.goldenLayout.eventHub.emit(events.layoutChanged);
-                $scope.showNamedLayoutManagement = false;
-            });
-    };
 
     function saveLayout(layoutKey, layoutCategory, isScreen, isAction) {
 
@@ -777,7 +325,6 @@ glDashboard.controller('workspace', function appCrtl(
         return $scope
             .doUiWork(layouts.saveLayout(context))
             .then((result) => {
-                $scope.newLayoutName = '';
                 $scope.goldenLayout.eventHub.emit(events.layoutChanged);
             });
     };
@@ -800,8 +347,9 @@ glDashboard.controller('workspace', function appCrtl(
         return layouts.getLayout($scope.context.layoutCategory);
     };
 
-    function createPromise() {
+    function createPromise(action) {
         var deferred = $q.defer();
+        if (action) action();
         deferred.resolve();
         return deferred.promise;
     };
@@ -823,6 +371,11 @@ glDashboard.controller('workspace', function appCrtl(
         }
     };
 
+    function clearLayout() {
+        return changeContext()
+            .then(initGoldenLayout)
+    };
+
     function resize() {
 
         $timeout(() => {
@@ -839,6 +392,7 @@ glDashboard.controller('workspace', function appCrtl(
     $scope.changeContext = changeContext;
     $scope.addWidget = addWidget;
     $scope.changeLayout = changeLayout;
+    $scope.clearLayout = clearLayout;
     $scope.reload = createWorkspace;
 
     initialize();

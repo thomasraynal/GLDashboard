@@ -1,0 +1,45 @@
+<div class="menu-item" dx-button="layoutManagementButtonOptions">
+</div>
+<div id="layoutManagementPopup" class="popup" dx-popup="layoutManagementPopupOptions">
+    <div>
+        <div class="dx-fieldset">
+            <div class="dx-fieldset-header">Create a named layout</div>
+            <div class="dx-field">
+                <div style="width:100%;min-height:30px;margin-top: 5px;">
+                    <div style="width:250px;" dx-text-box="textBoxNewLayoutOptions"></div>
+                </div>
+            </div>
+            <div class="dx-field">
+                <div style="width:100%;min-height:30px;margin-top: 5px;">
+                    <div dx-button="saveLayoutAsScreenButtonOptions"></div>
+                    <div dx-button="saveLayoutAsActionButtonOptions"></div>
+                </div>
+            </div>
+        </div>
+        <div class="dx-fieldset">
+            <div class="dx-fieldset-header">Create or load a serialized layout</div>
+            <div class="dx-field">
+                <div style="width:100%;min-height:30px;margin-top: 5px;">
+                    <div style="float:left;width:125px;" dx-button="saveLayoutAsFileButtonOptions"></div>
+                    <div style="float:left;width:125px;margin-top: -7px;" class="menu-item" id="loadLayoutFromFileInput" dx-file-uploader="loadLayoutFromFileUploadOptions"></div>
+                </div>
+            </div>
+        </div>
+        <div class="dx-fieldset">
+            <div class="dx-fieldset-header">Manage existing layouts</div>
+            <div class="dx-field">
+                <div>
+                    <div id="layoutManagementGridBox" dx-drop-down-box="layoutManagementGridBoxOptions">
+                        <div data-options="dxTemplate: { name: 'content' }">
+                            <div dx-data-grid="layoutManagementGridBoxOptions.dataGrid"></div>
+                        </div>
+                    </div>
+                    <div style="margin-top:10px;">
+                        <div style="width:125px;" dx-button="loadLayoutButtonOptions"></div>
+                        <div style="width:125px" dx-button="deleteLayoutButtonOptions"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
