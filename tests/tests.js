@@ -2,8 +2,6 @@ describe('glDashboard', function() {
 
     //bindable widgets
     //change widget name
-    //widget config
-    //save
 
     function render() {
         $timeout.flush(1000);
@@ -340,6 +338,27 @@ describe('glDashboard', function() {
         expect(worskspaceScope.context.isScreen).toEqual(false);
 
         expect(worskspaceScope.actions[0].items.length).toEqual(1);
+
+    });
+
+    it('should test layout management', function() {
+
+        var worskspaceScope = $rootScope.worskspaceScope;
+        var widget = widgets[1];
+        var myScreen = 'MY ACTION';
+
+        worskspaceScope.addWidget(widget.name);
+        $httpBackend.flush();
+
+        worskspaceScope.saveLayout(myScreen, myScreen, false, true);
+        render();
+
+        worskspaceScope.showLayoutManagement = true;
+        worskspaceScope.$digest();
+        render();
+
+        expect(worskspaceScope.availableLayouts.length).toEqual(1);
+        expect(worskspaceScope.availableLayouts[0].name).toEqual(myScreen);
 
     });
 

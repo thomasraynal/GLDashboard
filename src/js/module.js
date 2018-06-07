@@ -7,5 +7,5 @@
 
 })();
 
-angular.module('oneDasboardTemplates', []);
-var glDashboard = angular.module('glDashboard', ['dx', 'ngRoute', 'oneDasboardTemplates']);
+angular.module('glDashboardTemplates', []);
+var glDashboard = angular.module('glDashboard', ['dx', 'ngRoute', 'glDashboardTemplates']);

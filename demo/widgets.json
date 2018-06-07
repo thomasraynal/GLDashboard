@@ -1,8 +1,8 @@
 [{
-    "name": "Navigation View",
+    "name": "Navigation",
     "module": "navigation",
     "isKeyBounded": false,
-    "templateUrl": "plugins/html/navigationview-module.html",
+    "templateUrl": "plugins/html/widget-navigation-module.html",
     "moduleUrl": "plugins/modules/widget-navigation-module.js",
     "category": "Razor",
     "config": {}
@@ -10,36 +10,16 @@
     "name": "External Report",
     "module": "report",
     "isKeyBounded": true,
-    "templateUrl": "plugins/html/external-report-module.html",
-    "moduleUrl": "plugins/modules/external-report-module.js",
+    "templateUrl": "plugins/html/widget-external-report-module.html",
+    "moduleUrl": "plugins/modules/widget-external-report-module.js",
     "category": "Razor",
-    "config": {
-    }
+    "config": {}
 }, {
-    "name": "External Report2",
-    "module": "report",
+    "name": "Chart",
+    "module": "chart",
     "isKeyBounded": true,
-    "templateUrl": "plugins/html/external-report-module.html",
-    "moduleUrl": "plugins/modules/external-report-module.js",
+    "templateUrl": "plugins/html/widget-chart-module.html",
+    "moduleUrl": "plugins/modules/widget-chart-module.js",
     "category": "Razor",
-    "config": {
-    }
-}, {
-    "name": "External Report3",
-    "module": "report",
-    "isKeyBounded": true,
-    "templateUrl": "plugins/html/external-report-module.html",
-    "moduleUrl": "plugins/modules/external-report-module.js",
-    "category": "Razor",
-    "config": {
-    }
-}, {
-    "name": "External Report4",
-    "module": "report",
-    "isKeyBounded": true,
-    "templateUrl": "plugins/html/external-report-module.html",
-    "moduleUrl": "plugins/modules/external-report-module.js",
-    "category": "Razor",
-    "config": {
-    }
+    "config": {}
 }]

@@ -7,6 +7,6 @@ angular
         $controller,
         $element,
         $q) {
-
+        $controller('widget', { $scope: $scope });
 
     });

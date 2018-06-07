@@ -1,6 +1,6 @@
 {
 	"version" : "1.0.0.0" ,
-	"name" : "RAZOR",
+	"name" : "Dashboard",
 	"title": "Risk management Dashboard",
-	"icon" : "assets/razor-min.bmp"
+	"icon" : "assets/razor-2.png"
 }

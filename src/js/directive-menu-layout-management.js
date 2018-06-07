@@ -21,12 +21,7 @@ glDashboard.directive('workspaceMenuLayoutManagement', function(layouts, events)
             });
 
             $scope.$watch('showLayoutManagement', function() {
-
-                if ($scope.showLayoutManagement) {
-                    $scope.selectedLayout = null;
-                    $scope.newLayoutName = '';
-                    createLayoutManagementMenu();
-                }
+                showLayoutManagementPopup();
             });
 
             $scope.textBoxNewLayoutOptions = {
@@ -142,7 +137,7 @@ glDashboard.directive('workspaceMenuLayoutManagement', function(layouts, events)
 
             $scope.layoutManagementPopupOptions = {
                 width: 300,
-                height: 450,
+                height: 375,
                 showTitle: true,
                 title: 'Layout Management',
                 dragEnabled: false,
@@ -186,6 +181,16 @@ glDashboard.directive('workspaceMenuLayoutManagement', function(layouts, events)
                 }
             };
 
+            function showLayoutManagementPopup() {
+
+                if ($scope.showLayoutManagement) {
+                    $scope.selectedLayout = null;
+                    $scope.newLayoutName = '';
+                    createLayoutManagementMenu();
+                }
+
+            };
+
             function createLayoutManagementMenu() {
 
                 return layouts
@@ -225,6 +230,9 @@ glDashboard.directive('workspaceMenuLayoutManagement', function(layouts, events)
                         $scope.goldenLayout.eventHub.emit(events.layoutChanged);
                     });
             };
+
+
+            $scope.showLayoutManagementPopup = showLayoutManagementPopup;
         }
     };
 });
