@@ -50,7 +50,7 @@ glDashboard.directive('changeWidgetName', function() {
                     disabled: 'cannotValidateWidgetNameChange'
                 },
                 onClick: function() {
-                    $scope.changeWidgetName($scope.widgetNewName);
+                    $scope.changeName($scope.widgetNewName);
                     $scope.showChangeWidgetnamePopup = false;
                 }
             };

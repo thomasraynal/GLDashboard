@@ -3,17 +3,20 @@ module.exports = function(config) {
         basePath: '',
         frameworks: ['jasmine'],
         files: [
-            'dist/vendor/jquery.min.js',
-            'dist/vendor/FileSaver.min.js',
-            'dist/vendor/goldenlayout.min.js',
-            'dist/vendor/angular.min.js',
-            'dist/vendor/angular-route.min.js',
-            'dist/vendor/lodash.min.js',
-            'dist/vendor/dx.viz-web.js',
+            'node_modules/jquery/dist/jquery.min.js',
+            'node_modules/file-saver/FileSaver.min.js',
+            'node_modules/golden-layout/dist/goldenlayout.min.js',
+            'node_modules/angular/angular.min.js',
+            'node_modules/angular-route/angular-route.min.js',
+            'node_modules/lodash/lodash.min.js',
+            'vendor/dx.viz-web.js',
             'dist/gl-dashboard.min.js',
             'tests/plugins/infra/service-layout-test.js',
             'tests/plugins/infra/factory-layout-test.js',
             'tests/plugins/infra/service-widget-default.js',
+            // refacto - find a way to make scriptjs work in karma...
+            'tests/plugins/modules/test1.js',
+            'tests/plugins/modules/test2.js',
             'node_modules/angular-mocks/angular-mocks.js',
             'tests/tests.js',
         ],
@@ -22,6 +25,9 @@ module.exports = function(config) {
             'tests/plugins/infra/service-layout-test.js': ['babel'],
             'tests/plugins/infra/factory-layout-test.js': ['babel'],
             'tests/plugins/infra/service-widget-default.js': ['babel'],
+             // refacto - find a way to make scriptjs work in karma...
+            'tests/plugins/modules/test1.js': ['babel'],
+            'tests/plugins/modules/test2.js': ['babel'],
             'tests/tests.js': ['babel']
         },
         babelPreprocessor: {

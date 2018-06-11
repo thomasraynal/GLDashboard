@@ -8,6 +8,7 @@ glDashboard
         C1: 'C1',
         C2: 'C2'
     })
+    .constant('testEvent', 'raiseEvent')
     .factory('Context', function(states, categories) {
 
         return function(state, category, isScreen, isAction, layout) {

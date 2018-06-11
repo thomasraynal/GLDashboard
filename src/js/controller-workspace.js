@@ -93,7 +93,7 @@ glDashboard.controller('workspace', function appCrtl(
         disable();
 
         //handle promise and function call to promise
-        var run = (!action.then) ? action() : action;
+        var run = (!action.then) ? $timeout(() => action()) : action;
 
         return run
             .then((result) => {
@@ -104,6 +104,7 @@ glDashboard.controller('workspace', function appCrtl(
             .catch(err => {
                 $scope.currentError = error.createError(err);
                 $scope.showErrorPopup = true;
+                $scope.workspace.$digest();
                 enable();
             });
     };
@@ -112,7 +113,7 @@ glDashboard.controller('workspace', function appCrtl(
 
         $timeout(() => {
 
-            var init = disable();
+            var init = $timeout(() => disable());
             init
                 .then(setUp)
                 .then(setEventHooks)
@@ -132,15 +133,11 @@ glDashboard.controller('workspace', function appCrtl(
     };
 
     function disable() {
-        return $timeout(() => {
-            $scope.isLoading = true;
-        });
+        $scope.isLoading = true;
     };
 
     function enable() {
-        return $timeout(() => {
-            $scope.isLoading = false;
-        });
+        $scope.isLoading = false;
     };
 
     function setUp() {

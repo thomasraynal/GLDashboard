@@ -1,21 +1,8 @@
 describe('glDashboard', function() {
 
-    //bindable widgets
-    //change widget name
-
     function render() {
         $timeout.flush(1000);
     }
-
-    function wait(time, finalizer) {
-
-        if (!time) time = 1000;
-
-        setTimeout(function() {
-            if (finalizer) finalizer();
-        }, time);
-    }
-
 
     var $rootScope,
         $routeParams,
@@ -23,7 +10,8 @@ describe('glDashboard', function() {
         states,
         scope,
         $timeout,
-        $script;
+        $script,
+        workspaceElement;
 
 
     window.$script = (path, promise) => {
@@ -70,15 +58,15 @@ describe('glDashboard', function() {
         $httpBackend.when('GET', 'widgets.json').respond(200, widgets);
 
         $templateCache.put('plugins/html/view.menu.html', '<div class="w_menu" id="workspaceMenu">    <workspace-menu-app-name></workspace-menu-app-name>    <workspace-menu-widgets></workspace-menu-widgets>    <workspace-menu-actions-and-screens></workspace-menu-actions-and-screens>    <workspace-menu-layout-save></workspace-menu-layout-save>    <workspace-menu-layout-save-screen-or-action></workspace-menu-layout-save-screen-or-action>    <workspace-menu-layout-management></workspace-menu-layout-management>    <workspace-menu-layout-clear></workspace-menu-layout-clear></div>');
-        $templateCache.put('plugins/html/test1-module.html', '<div  id="test1"></div>');
-        $templateCache.put('plugins/html/test2-module.html', '<div  id="test2"></div>');
+        $templateCache.put('plugins/html/test1-module.html', '<div ng-controller="test1" id="test1">  <change-widget-name></change-widget-name></div>');
+        $templateCache.put('plugins/html/test2-module.html', '<div ng-controller="test2" id="test2">  <change-widget-name></change-widget-name></div>');
 
-        var workspaceElement = $compile('<div ng-controller="workspace"><div id="workspaceContainer" class="w_container"></div><workspace-menu></workspace-menu></div>')($rootScope);
+        workspaceElement = $compile('<div ng-controller="workspace"><div id="workspaceContainer" class="w_container"></div><workspace-menu></workspace-menu></div>')($rootScope);
+
         $rootScope.worskspaceScope = angular.element(workspaceElement[0]).scope();
         $rootScope.worskspaceScope.$workspaceContainer = workspaceElement.find("#workspaceContainer")
 
         render();
-        wait(1000);
 
         $httpBackend.flush();
 
@@ -195,14 +183,15 @@ describe('glDashboard', function() {
 
         worskspaceScope.saveLayoutAsDefault();
 
-        worskspaceScope.reload();
-
         render();
+        worskspaceScope.reload();
 
         var widget = worskspaceScope.goldenLayout
             .toConfig()
-            //widget container
+            //canvas
             .content[0]
+            //widget container
+            .content;
 
         expect(widget).not.toBe(null);
 
@@ -217,10 +206,10 @@ describe('glDashboard', function() {
         $httpBackend.flush();
 
         worskspaceScope.saveLayoutAsDefaultForCategory();
-        render();
 
-        worskspaceScope.reload();
         render();
+        worskspaceScope.reload();
+
 
         var widgetsContainer = worskspaceScope.goldenLayout
             .toConfig()
@@ -237,11 +226,9 @@ describe('glDashboard', function() {
         $httpBackend.flush();
 
         worskspaceScope.saveLayoutAsDefault();
-        render();
 
+        render();
         worskspaceScope.reload();
-        render();
-
 
         widgetsContainer = worskspaceScope.goldenLayout
             .toConfig()
@@ -261,8 +248,8 @@ describe('glDashboard', function() {
         $httpBackend.flush();
 
         worskspaceScope.saveLayout(screenName, screenName, true, false);
-        render();
 
+        render();
         worskspaceScope.reload();
         render();
 
@@ -273,6 +260,7 @@ describe('glDashboard', function() {
 
         expect(widgetsContainer.content).toBe(undefined);
 
+        render();
         worskspaceScope.changeLayout(screenName);
         render();
 
@@ -305,8 +293,8 @@ describe('glDashboard', function() {
         $httpBackend.flush();
 
         worskspaceScope.saveLayout(screenName, screenName, false, true);
-        render();
 
+        render();
         worskspaceScope.reload();
         render();
 
@@ -359,6 +347,131 @@ describe('glDashboard', function() {
 
         expect(worskspaceScope.availableLayouts.length).toEqual(1);
         expect(worskspaceScope.availableLayouts[0].name).toEqual(myScreen);
+
+    });
+
+
+    it('should test bindable widgets', function() {
+
+        var worskspaceScope = $rootScope.worskspaceScope;
+        var widget1 = widgets[0];
+        var widget2 = widgets[1];
+
+        worskspaceScope.addWidget(widget1.name);
+        $httpBackend.flush();
+        worskspaceScope.addWidget(widget2.name);
+        $httpBackend.flush();
+
+        var widgetCount = worskspaceScope.goldenLayout.root.getComponentsByName('angularModule').length;
+        expect(widgetCount).toEqual(2);
+
+        var widget1Scope = workspaceElement.find('#test1').scope();
+        var widget2Scope = workspaceElement.find('#test2').scope();
+
+        var event = "yadada";
+
+        widget1Scope.raiseEvent(event);
+
+        expect(widget1Scope.state).toEqual(event);
+        expect(widget2Scope.state).toEqual(event);
+    });
+
+    it('should change widget name', function() {
+
+        var worskspaceScope = $rootScope.worskspaceScope;
+        var widget = widgets[0];
+
+        worskspaceScope.addWidget(widget.name);
+        $httpBackend.flush();
+
+        worskspaceScope.saveLayoutAsDefault();
+        render();
+
+        var widget1Scope = workspaceElement.find('#test1').scope();
+
+        var oldName = widget1Scope.name;
+        var newName = 'newName';
+
+        widget1Scope.changeName(newName);
+
+        expect(widget1Scope.config.title).toEqual(newName);
+
+        worskspaceScope.reload();
+        render();
+
+        var widget1Scope = workspaceElement.find('#test1').scope();
+        expect(widget1Scope.config.title).toEqual(newName);
+
+    });
+
+
+    it('should test workspace loading ui', function(done) {
+
+
+        var worskspaceScope = $rootScope.worskspaceScope;
+
+        var uiWork = worskspaceScope.doUiWork(() => {
+            expect(worskspaceScope.isLoading).toEqual(true);
+        });
+
+        uiWork.then(() => {
+            expect(worskspaceScope.isLoading).toEqual(false);
+        });
+
+        render();
+
+        var asyncUiWork = worskspaceScope.doUiWork($timeout(() => {
+            expect(worskspaceScope.isLoading).toEqual(true);
+        }));
+
+        asyncUiWork.then(() => {
+            expect(worskspaceScope.isLoading).toEqual(false);
+            done();
+        });
+
+        render();
+
+    });
+
+
+    it('should test widget loading ui', function(done) {
+
+
+        var worskspaceScope = $rootScope.worskspaceScope;
+        var widget = widgets[0];
+
+        worskspaceScope.addWidget(widget.name);
+        $httpBackend.flush();
+
+        var widget1Scope = workspaceElement.find('#test1').scope();
+
+        var uiWork = widget1Scope.doUiWork(() => {
+            expect(widget1Scope.isLoading).toEqual(true);
+        });
+
+
+        render();
+
+        uiWork.then(() => {
+            expect(widget1Scope.isLoading).toEqual(false);
+        });
+
+        render();
+
+        setTimeout(() => {
+
+            var asyncUiWork = widget1Scope.doUiWork($timeout(() => {
+                expect(widget1Scope.isLoading).toEqual(true);
+            }));
+
+            asyncUiWork.then(() => {
+                expect(widget1Scope.isLoading).toEqual(false);
+                done();
+            });
+
+            render();
+
+        });
 
     });
 

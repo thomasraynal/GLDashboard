@@ -6,12 +6,21 @@ glDashboard.controller('widget', function widgetCrtl($scope, $timeout, $q, conta
     $scope.name = container._config.componentState.name;
     $scope.config = container._config.componentState.config;
 
+    $scope.isLoading = false;
+
+    $scope.$watch('isLoading', function() {
+        if ($scope.isLoading) $scope.container._element.addClass("disable");
+        else {
+            $scope.container._element.removeClass("disable");
+        }
+    });
+
     $scope.doUiWork = (action, callback) => {
 
         $scope.disable();
 
         //handle promise and function call to promise
-        var run = (!action.then) ? action() : action;
+        var run = (!action.then) ? $timeout(() => action()) : action;
 
         return run
             .then((result) => {
@@ -27,7 +36,7 @@ glDashboard.controller('widget', function widgetCrtl($scope, $timeout, $q, conta
             });
     };
 
-    $scope.changeWidgetName = (name) => {
+    $scope.changeName = (name) => {
         $scope.config.title = name;
         $scope.container.setTitle(name);
     };
@@ -40,16 +49,12 @@ glDashboard.controller('widget', function widgetCrtl($scope, $timeout, $q, conta
         return $scope.container._element.width()
     };
 
-    $scope.isUpdating = () => {
-        return $scope.container._element.hasClass("disable");
-    };
-
     $scope.disable = () => {
-        $scope.container._element.addClass("disable");
+        $scope.isLoading = true;
     };
 
     $scope.enable = () => {
-        $scope.container._element.removeClass("disable");
+        $scope.isLoading = false;
     };
 
     $scope.initialize = () => {
