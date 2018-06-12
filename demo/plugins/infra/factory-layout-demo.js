@@ -13,12 +13,12 @@ glDashboard
         return function(office, category, isScreen, isAction, layout) {
 
             return {
-                isAction: OneDashboard.isUndefinedOrNull(isAction) ? false : isAction,
-                isScreen: OneDashboard.isUndefinedOrNull(isScreen) ? false : isScreen,
+                isAction: GlDashboard.isUndefinedOrNull(isAction) ? false : isAction,
+                isScreen: GlDashboard.isUndefinedOrNull(isScreen) ? false : isScreen,
                 layoutKey: office,
                 isDefault: false,
-                layoutCategory: OneDashboard.isUndefinedOrNull(category) ? categories.main : category,
-                layout: OneDashboard.isUndefinedOrNull(layout) ? {
+                layoutCategory: GlDashboard.isUndefinedOrNull(category) ? categories.main : category,
+                layout: GlDashboard.isUndefinedOrNull(layout) ? {
                     settings: {
                         showPopoutIcon: false
                     },

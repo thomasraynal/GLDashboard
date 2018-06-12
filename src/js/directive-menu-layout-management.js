@@ -17,7 +17,7 @@ glDashboard.directive('workspaceMenuLayoutManagement', function(layouts, events)
             });
 
             $scope.$watch('newLayoutName', function() {
-                $scope.isSaveLayoutDisabled = OneDashboard.isUndefinedOrNull($scope.newLayoutName) || $scope.newLayoutName == '';
+                $scope.isSaveLayoutDisabled = GlDashboard.isUndefinedOrNull($scope.newLayoutName) || $scope.newLayoutName == '';
             });
 
             $scope.$watch('showLayoutManagement', function() {
@@ -210,7 +210,7 @@ glDashboard.directive('workspaceMenuLayoutManagement', function(layouts, events)
                                 category: category,
                                 isDefault: layout.isDefault,
                                 layout: layout,
-                                name: OneDashboard.isUndefinedOrNull(layout.layoutKey) ? layout.layoutCategory : layout.layoutKey
+                                name: GlDashboard.isUndefinedOrNull(layout.layoutKey) ? layout.layoutCategory : layout.layoutKey
                             });
 
                         }, []);

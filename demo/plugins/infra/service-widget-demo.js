@@ -8,7 +8,7 @@ glDashboard.service('widgets', function($q, $http, $log) {
 
                 var widget = _.find(widgets, widget => widget.name === name);
 
-                if (OneDashboard.isUndefinedOrNull(widget)) return null;
+                if (GlDashboard.isUndefinedOrNull(widget)) return null;
 
                 return {
                     title: name,

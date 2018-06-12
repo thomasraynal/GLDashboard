@@ -10,7 +10,7 @@ glDashboard
         this.getAvailableScreens = getAvailableScreens;
 
 
-        if (OneDashboard.isUndefinedOrNull(localStorage.getItem(repository))) {
+        if (GlDashboard.isUndefinedOrNull(localStorage.getItem(repository))) {
             localStorage.setItem(repository, []);
         }
 
@@ -31,7 +31,7 @@ glDashboard
 
             var result = null;
 
-            if (!OneDashboard.isUndefinedOrNull(layoutKey)) {
+            if (!GlDashboard.isUndefinedOrNull(layoutKey)) {
 
                 result = _.find(internalGetLayouts(), function(savedlayout) {
                     return savedlayout.layoutKey == layoutKey || (savedlayout.layoutKey == null && savedlayout.layoutCategory == layoutKey);

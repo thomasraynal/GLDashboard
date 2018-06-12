@@ -55,7 +55,7 @@ glDashboard.directive('workspaceMenuWidgets', function(widgets, events) {
                         });
 
 
-                        if (OneDashboard.isUndefinedOrNull(parentMenu) && !isExistingMenu) {
+                        if (GlDashboard.isUndefinedOrNull(parentMenu) && !isExistingMenu) {
 
                             parentMenu = {
                                 name: widgetcategory,
@@ -117,7 +117,7 @@ glDashboard.directive('workspaceMenuWidgets', function(widgets, events) {
                                     name: widget.name,
                                     gl_template: widget.template,
                                     type: 'widget',
-                                    disabled: OneDashboard.isUndefinedOrNull($scope.context.layoutKey) && widget.isKeyBounded,
+                                    disabled: GlDashboard.isUndefinedOrNull($scope.context.layoutKey) && widget.isKeyBounded,
                                     config: widget.config == null ? {} : widget.config
                                 });
                             }

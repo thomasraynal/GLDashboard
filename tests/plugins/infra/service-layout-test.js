@@ -20,7 +20,7 @@ glDashboard
 
             var result = null;
 
-            if (!OneDashboard.isUndefinedOrNull(layoutKey)) {
+            if (!GlDashboard.isUndefinedOrNull(layoutKey)) {
 
                 result = _.find(window.layoutRepository, function(savedlayout) {
                     return savedlayout.layoutKey == layoutKey || (savedlayout.layoutKey == null && savedlayout.layoutCategory == layoutKey);

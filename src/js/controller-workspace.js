@@ -61,7 +61,7 @@ glDashboard.controller('workspace', function appCrtl(
         else if ($scope.context.isScreen) $scope.saveContextAsScreenOrActionLabel = 'Save [' + $scope.context.layoutKey + ']';
         else $scope.saveContextAsScreenOrActionLabel = null;
 
-        $scope.isSaveLayoutDefaultDisabled = OneDashboard.isUndefinedOrNull($scope.context.layoutKey) || $scope.context.isAction || $scope.context.isScreen;
+        $scope.isSaveLayoutDefaultDisabled = GlDashboard.isUndefinedOrNull($scope.context.layoutKey) || $scope.context.isAction || $scope.context.isScreen;
     });
 
     $scope.$watch('saveContextAsScreenOrActionLabel', function() {
@@ -195,7 +195,7 @@ glDashboard.controller('workspace', function appCrtl(
 
     function initGoldenLayout() {
 
-        if (!OneDashboard.isUndefinedOrNull($scope.goldenLayout)) $scope.goldenLayout.destroy();
+        if (!GlDashboard.isUndefinedOrNull($scope.goldenLayout)) $scope.goldenLayout.destroy();
 
         var layout = $scope.context.layout;
 
@@ -217,7 +217,7 @@ glDashboard.controller('workspace', function appCrtl(
             .doUiWork(getDefaultLayout())
             .then((keyLayout) => {
 
-                if (OneDashboard.isUndefinedOrNull(keyLayout)) {
+                if (GlDashboard.isUndefinedOrNull(keyLayout)) {
 
                     return $scope
                         .doUiWork(getLayoutByCategory())
@@ -269,7 +269,7 @@ glDashboard.controller('workspace', function appCrtl(
     function changeContext(context) {
 
         //if no context provided crete default one
-        if (OneDashboard.isUndefinedOrNull(context)) {
+        if (GlDashboard.isUndefinedOrNull(context)) {
             $scope.context = new Context($routeParams.key, $routeParams.category);
 
         } else {
@@ -335,12 +335,12 @@ glDashboard.controller('workspace', function appCrtl(
     }
 
     function getDefaultLayout() {
-        if (OneDashboard.isUndefinedOrNull($scope.context)) return createPromise();
+        if (GlDashboard.isUndefinedOrNull($scope.context)) return createPromise();
         return layouts.getLayout($scope.context.layoutKey);
     };
 
     function getLayoutByCategory() {
-        if (OneDashboard.isUndefinedOrNull($scope.context)) return createPromise();
+        if (GlDashboard.isUndefinedOrNull($scope.context)) return createPromise();
         return layouts.getLayout($scope.context.layoutCategory);
     };
 

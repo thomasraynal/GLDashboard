@@ -1,3 +1,5 @@
+var glDashboard = angular.module('glDashboard', ['dx', 'ngRoute', 'glDashboardTemplates']);
+
 glDashboard.config(function($routeProvider, $locationProvider) {
 
     $routeProvider

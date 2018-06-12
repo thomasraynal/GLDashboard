@@ -10,6 +10,7 @@ module.exports = function(config) {
             'node_modules/angular-route/angular-route.min.js',
             'node_modules/lodash/lodash.min.js',
             'vendor/dx.viz-web.js',
+            'tests/app.js',
             'dist/gl-dashboard.min.js',
             'tests/plugins/infra/service-layout-test.js',
             'tests/plugins/infra/factory-layout-test.js',
