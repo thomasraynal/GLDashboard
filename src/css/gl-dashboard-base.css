@@ -1,12 +1,13 @@
 .gld_workspace_container {
     z-index: 0;
+    bottom: 0;
 }
 
 .gld_workspace_menu {
     height: 35px;
     position: absolute;
     z-index: 100;
-    bottom: 0;
+    top: 0;
     right: 0;
     left: 0;
     width: auto !important;

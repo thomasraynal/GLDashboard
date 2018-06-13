@@ -169,6 +169,47 @@ angular
             columns: ["CompanyName", "City", "State", "Phone", "Fax"],
             selection: {
                 mode: "single"
+            },
+            resize: true,
+            allowColumnReordering: true,
+            allowColumnResizing: true,
+            columnResizingMode: "widget",
+            columnAutoWidth: true,
+            grouping: {
+                autoExpandAll: false,
+            },
+            columnChooser: {
+                enabled: true
+            },
+            columnFixing: {
+                enabled: true
+            },
+            scrolling: {
+                mode: "virtual"
+            },
+            headerFilter: {
+                visible: true
+            },
+            loadPanel: {
+                enabled: false
+            },
+            hoverStateEnabled: true,
+            controlColumnResizing: true,
+            showRowLines: true,
+            showColumnLines: true,
+            selection: {
+                mode: "single"
+            },
+            searchPanel: {
+                visible: true,
+                width: 240,
+                placeholder: "Search..."
+            },
+            groupPanel: {
+                visible: true
+            },
+            sorting: {
+                mode: "multiple"
             }
         };
 

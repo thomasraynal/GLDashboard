@@ -1,4 +1,4 @@
-glDashboard.directive('workspaceMenuLayoutManagement', function(layouts, events) {
+glDashboard.directive('workspaceMenuLayoutManagement', function(layouts, glDashboardEvents) {
     return {
         restrict: "E",
         templateUrl: 'view.menu.layout.management.html',
@@ -227,7 +227,7 @@ glDashboard.directive('workspaceMenuLayoutManagement', function(layouts, events)
                 return $scope
                     .doUiWork(layouts.deleteLayout(layout))
                     .then((result) => {
-                        $scope.goldenLayout.eventHub.emit(events.layoutChanged);
+                        $scope.goldenLayout.emit(glDashboardEvents.afterLayoutChanged);
                     });
             };
 

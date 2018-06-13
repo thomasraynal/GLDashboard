@@ -20,7 +20,6 @@ glDashboard.service('widgets', function($q, $http, $log) {
             });
     };
 
-
     this.getWidgets = () => {
         return $http
             .get("widgets.json")

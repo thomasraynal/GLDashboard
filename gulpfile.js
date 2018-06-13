@@ -6,7 +6,9 @@ var gulp = require('gulp'),
     ngAnnotate = require('gulp-ng-annotate'),
     templateCache = require('gulp-angular-templatecache'),
     babel = require('gulp-babel'),
-    targetDir = './dist';
+    targetDir = './dist',
+    path = require('path'),
+    headerComment = require('gulp-header-comment');
 
 gulp.task('templates', function() {
     return gulp.src('./src/html/*.html')
@@ -18,6 +20,9 @@ gulp.task('css', function() {
     return gulp.src('./src/css/*.css')
         .pipe(concat('gl-dashboard.base.min.css'))
         .pipe(minifyCSS({ 'keepSpecialComments-*': 0 }))
+        .pipe(headerComment({
+            file: path.join(__dirname, 'version')
+        }))
         .pipe(gulp.dest(targetDir))
         .pipe(gulp.dest('demo/css'));
 });
@@ -44,7 +49,7 @@ gulp.task('vendorjs', function() {
             './node_modules/angular/angular.min.js',
             './node_modules/angular-route/angular-route.min.js',
             './node_modules/lodash/lodash.min.js',
-            './vendor/dx.viz-web.js'
+            './vendor/dx.all.js'
         ])
         .pipe(gulp.dest(targetDir + '/vendor'))
         .pipe(concat('vendor.js'))
@@ -57,7 +62,7 @@ gulp.task('vendorcss', function() {
             './vendor/dx.spa.css',
             './node_modules/golden-layout/src/css/goldenlayout-base.css'
         ])
-        .pipe(gulp.dest(targetDir+ '/vendor'))
+        .pipe(gulp.dest(targetDir + '/vendor'))
         .pipe(gulp.dest('demo/css/'));
 });
 
@@ -72,6 +77,9 @@ gulp.task('js', function() {
         .pipe(concat('gl-dashboard.min.js'))
         .pipe(ngAnnotate())
         .pipe(uglify())
+        .pipe(headerComment({
+            file: path.join(__dirname, 'version')
+        }))
         .pipe(gulp.dest(targetDir))
         .pipe(gulp.dest('demo/js'));
 });
@@ -80,7 +88,7 @@ gulp.task('connect', function() {
     connect.server({
         root: './demo',
         livereload: true,
-        port: 8282
+        port: 8484
     });
 });
 

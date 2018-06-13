@@ -11,13 +11,17 @@ glDashboard.controller('workspace', function appCrtl(
     error,
     widgets,
     layouts,
-    events,
+    glDashboardEvents,
     Save,
-    Context) {
+    Context,
+    customWidgets,
+    glDashboardKeyLabel,
+    glDashboardCategoryLabel) {
 
     $scope.context;
 
     $scope.onInitializedHandlers = [];
+    $scope.onStartupHandlers = [];
     $scope.isLoading = false;
     $scope.$workspaceContainer = $("#workspaceContainer");
     $scope.isFullScreen;
@@ -57,8 +61,7 @@ glDashboard.controller('workspace', function appCrtl(
             return;
         }
 
-        if ($scope.context.isAction) $scope.saveContextAsScreenOrActionLabel = 'Save [' + $scope.context.layoutKey + ']';
-        else if ($scope.context.isScreen) $scope.saveContextAsScreenOrActionLabel = 'Save [' + $scope.context.layoutKey + ']';
+        if ($scope.context.isAction || $scope.context.isScreen) $scope.saveContextAsScreenOrActionLabel = 'Save [' + $scope.context.layoutKey + ']';
         else $scope.saveContextAsScreenOrActionLabel = null;
 
         $scope.isSaveLayoutDefaultDisabled = GlDashboard.isUndefinedOrNull($scope.context.layoutKey) || $scope.context.isAction || $scope.context.isScreen;
@@ -79,13 +82,26 @@ glDashboard.controller('workspace', function appCrtl(
         hideSubmenuOnMouseLeave: true,
         displayExpr: "name",
         onItemClick: (data) => {
+
             if (data.itemData.type == 'category') return;
-            addWidget(data.itemData.name);
+
+            if (data.itemData.type == 'custom-widget') {
+
+                customWidgets.showCustomWidget($scope, data.itemData.customWidget);
+
+            } else {
+
+                addWidget(data.itemData.name);
+            }
         }
     };
 
     $scope.onInitialized = (action) => {
         $scope.onInitializedHandlers.push(action);
+    };
+
+    $scope.onStartup = (action) => {
+        $scope.onStartupHandlers.push(action);
     };
 
     $scope.doUiWork = (action, callback) => {
@@ -104,7 +120,7 @@ glDashboard.controller('workspace', function appCrtl(
             .catch(err => {
                 $scope.currentError = error.createError(err);
                 $scope.showErrorPopup = true;
-                $scope.workspace.$digest();
+                if (!GlDashboard.isUndefinedOrNull($scope.workspace)) $scope.workspace.$digest();
                 enable();
             });
     };
@@ -118,6 +134,7 @@ glDashboard.controller('workspace', function appCrtl(
                 .then(setUp)
                 .then(setEventHooks)
                 .then(changeContext)
+                .then(startUp)
                 .then(loadPlugins)
                 .then(createWorkspace)
                 .then(finalize)
@@ -147,9 +164,10 @@ glDashboard.controller('workspace', function appCrtl(
         return createPromise();
     };
 
-    function finalize() {
 
-        var promises = _.transform($scope.onInitializedHandlers, (aggregate, action) => {
+    function runHandlers(handlers) {
+
+        var promises = _.transform(handlers, (aggregate, action) => {
 
             var promise = action
 
@@ -168,6 +186,15 @@ glDashboard.controller('workspace', function appCrtl(
                 $scope.showErrorPopup = true;
                 enable();
             });
+    };
+
+    function startUp() {
+        return runHandlers($scope.onStartupHandlers);
+    };
+
+
+    function finalize() {
+        return runHandlers($scope.onInitializedHandlers);
     };
 
     function workspaceComponentFactory(container, state) {
@@ -268,18 +295,21 @@ glDashboard.controller('workspace', function appCrtl(
 
     function changeContext(context) {
 
-        //if no context provided crete default one
+        var key = $routeParams[glDashboardKeyLabel];
+        var category = $routeParams[glDashboardCategoryLabel];
+
+        //if no context provided create default one
         if (GlDashboard.isUndefinedOrNull(context)) {
-            $scope.context = new Context($routeParams.key, $routeParams.category);
+            $scope.context = new Context(key, category);
 
         } else {
             //if action or screen, we change the context to keep track of the object
             if (context.isAction || context.isScreen) {
-                $scope.context = new Context(context.layoutKey, $routeParams.category, context.isScreen, context.isAction, context.layout);
+                $scope.context = new Context(context.layoutKey, category, context.isScreen, context.isAction, context.layout);
             }
             //if not, we just get the underlying layout and keep the current route state
             else {
-                $scope.context = new Context($routeParams.key, $routeParams.category, false, false, context.layout);
+                $scope.context = new Context(key, category, false, false, context.layout);
             }
 
         }
@@ -291,10 +321,6 @@ glDashboard.controller('workspace', function appCrtl(
 
         angular.element($window).bind('resize', () => {
             resize();
-        });
-
-        angular.element($document).bind('mousemove', (e) => {
-            _.throttle(() => { handleMenuVisibility(e.pageY); }, 500)();
         });
     };
 
@@ -319,10 +345,12 @@ glDashboard.controller('workspace', function appCrtl(
 
         var context = new Context(layoutKey, layoutCategory, isScreen, isAction, $scope.goldenLayout.toConfig());
 
+        $scope.goldenLayout.emit(glDashboardEvents.beforeLayoutChanged);
+
         return $scope
             .doUiWork(layouts.saveLayout(context))
             .then((result) => {
-                $scope.goldenLayout.eventHub.emit(events.layoutChanged);
+                $scope.goldenLayout.emit(glDashboardEvents.afterLayoutChanged);
             });
     };
 
@@ -351,32 +379,16 @@ glDashboard.controller('workspace', function appCrtl(
         return deferred.promise;
     };
 
-    function handleMenuVisibility(mouseY) {
-        if (null == $scope.goldenLayout) return;
-
-        if (mouseY <= $scope.$workspaceContainer.height() - 100) {
-
-            if ($scope.isFullScreen) return;
-            $scope.isFullScreen = true;
-            $('#workspaceMenu').hide(150);
-
-        } else {
-
-            if (!$scope.isFullScreen) return;
-            $scope.isFullScreen = false;
-            $('#workspaceMenu').show(150);
-        }
-    };
-
     function clearLayout() {
-        return changeContext()
-            .then(initGoldenLayout)
+        _.each($(".gld_widget"), ($elt) => angular.element($elt).scope().container.close());
     };
 
     function resize() {
 
         $timeout(() => {
-            $scope.$workspaceContainer.height($(window).height());
+            var $workspaceMenu = $("#workspaceMenu");
+            $scope.$workspaceContainer.offset({ top: $workspaceMenu.height(), left: 0 });
+            $scope.$workspaceContainer.height($(window).height() - $workspaceMenu.height());
             $scope.$workspaceContainer.width($(window).width());
             $scope.goldenLayout.updateSize();
         });

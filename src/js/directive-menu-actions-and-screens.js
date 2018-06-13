@@ -1,4 +1,4 @@
-glDashboard.directive('workspaceMenuActionsAndScreens', function(layouts, events) {
+glDashboard.directive('workspaceMenuActionsAndScreens', function(layouts, glDashboardEvents) {
     return {
         restrict: "E",
         templateUrl: 'view.menu.actions.and.screens.html',
@@ -6,12 +6,10 @@ glDashboard.directive('workspaceMenuActionsAndScreens', function(layouts, events
 
             $scope.onInitialized(() => {
 
-                createScreenMenu();
-                createActionMenu();
+                createMenus();
 
-                $scope.goldenLayout.eventHub.on(events.layoutChanged, function(date) {
-                    createActionMenu();
-                    createScreenMenu();
+                $scope.goldenLayout.on(glDashboardEvents.afterLayoutChanged, function(date) {
+                    createMenus();
                 });
 
             });
@@ -37,6 +35,12 @@ glDashboard.directive('workspaceMenuActionsAndScreens', function(layouts, events
                 onItemClick: loadScreenOrAction
             };
 
+            function createMenus() {
+
+                createActionMenu();
+                createScreenMenu();
+
+            };
 
             function loadScreenOrAction(data) {
 
@@ -53,7 +57,7 @@ glDashboard.directive('workspaceMenuActionsAndScreens', function(layouts, events
                         $scope.screens = [{
                             name: 'Screens',
                             type: 'category',
-                            items: _.transform(screens, (aggregate, screen) => aggregate.push({ name: screen.layoutKey, type: 'screen' }), [])
+                            items: _.transform(screens, (aggregate, screen) => aggregate.push({ name: screen, type: 'screen' }), [])
                         }];
                     });
             };
@@ -66,7 +70,7 @@ glDashboard.directive('workspaceMenuActionsAndScreens', function(layouts, events
                         $scope.actions = [{
                             name: 'Actions',
                             type: 'category',
-                            items: _.transform(actions, (aggregate, action) => aggregate.push({ name: action.layoutKey, type: 'action' }), [])
+                            items: _.transform(actions, (aggregate, action) => aggregate.push({ name: action, type: 'action' }), [])
                         }];
                     });
             };

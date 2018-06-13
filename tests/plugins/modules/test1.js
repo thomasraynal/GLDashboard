@@ -7,7 +7,7 @@ angular
         $scope.state = null;
 
         $scope.raiseEvent = (value) => {
-            $scope.container.layoutManager.eventHub.emit(testEvent, value);
+            $scope.container.layoutManager.emit(testEvent, value);
         };
 
         $scope.onEvent(testEvent, (value) => {
