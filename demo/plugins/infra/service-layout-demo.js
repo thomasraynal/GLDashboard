@@ -15,11 +15,17 @@ glDashboard
         }
 
         function getAvailableActions() {
-            return createPromise(_.filter(internalGetLayouts(), (savedlayout) => savedlayout.isAction == true));
+            return createPromise(
+                _(internalGetLayouts())
+                .filter((savedlayout) => savedlayout.isAction == true)
+                .transform((aggregate, savedlayout) => aggregate.push(savedlayout.layoutKey), []).value());
         };
 
         function getAvailableScreens() {
-            return createPromise(_.filter(internalGetLayouts(), (savedlayout) => savedlayout.isScreen == true));
+            return createPromise(
+                _(internalGetLayouts())
+                .filter((savedlayout) => savedlayout.isScreen == true)
+                .transform((aggregate, savedlayout) => aggregate.push(savedlayout.layoutKey), []).value());
         };
 
         function internalGetLayouts() {

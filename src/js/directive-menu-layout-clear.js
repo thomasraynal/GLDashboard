@@ -1,4 +1,4 @@
-glDashboard.directive('workspaceMenuLayoutClear', function(layouts, events) {
+glDashboard.directive('workspaceMenuLayoutClear', function(layouts) {
     return {
         restrict: "E",
         templateUrl: 'view.menu.layout.clear.html',

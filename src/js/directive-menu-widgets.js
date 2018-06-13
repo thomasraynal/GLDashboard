@@ -1,4 +1,4 @@
-glDashboard.directive('workspaceMenuWidgets', function(widgets, events) {
+glDashboard.directive('workspaceMenuWidgets', function(widgets, glDashboardEvents, customWidgets) {
     return {
         restrict: "E",
         templateUrl: 'view.menu.widgets.html',
@@ -8,7 +8,11 @@ glDashboard.directive('workspaceMenuWidgets', function(widgets, events) {
 
                 createWidgetMenu();
 
-                $scope.goldenLayout.eventHub.on(events.layoutChanged, function(date) {
+                $scope.goldenLayout.on(glDashboardEvents.customWidgetCreated, function() {
+                    createWidgetMenu();
+                });
+
+                $scope.goldenLayout.on(glDashboardEvents.customWidgetDeleted, function() {
                     createWidgetMenu();
                 });
             });
@@ -53,7 +57,6 @@ glDashboard.directive('workspaceMenuWidgets', function(widgets, events) {
                         var isExistingMenu = null != _.find(result, function(menu) {
                             return menu.name === widgetcategory;
                         });
-
 
                         if (GlDashboard.isUndefinedOrNull(parentMenu) && !isExistingMenu) {
 
@@ -117,7 +120,7 @@ glDashboard.directive('workspaceMenuWidgets', function(widgets, events) {
                                     name: widget.name,
                                     gl_template: widget.template,
                                     type: 'widget',
-                                    disabled: GlDashboard.isUndefinedOrNull($scope.context.layoutKey) && widget.isKeyBounded,
+                                    disabled: !$scope.context.enableWidget(widget),
                                     config: widget.config == null ? {} : widget.config
                                 });
                             }
@@ -125,6 +128,20 @@ glDashboard.directive('workspaceMenuWidgets', function(widgets, events) {
                     });
 
                 });
+
+                var customWidgetTemplates = customWidgets.getAvailableTemplates();
+
+                if (!GlDashboard.isUndefinedOrNull(customWidgetTemplates) && customWidgetTemplates.length > 0) {
+
+                    var customWidgetMenu = {
+                        name: 'My Widgets',
+                        type: 'category',
+                        items: _.transform(customWidgetTemplates, (aggregate, customWidget) => aggregate.push({ name: customWidget.name, disabled: GlDashboard.isUndefinedOrNull($scope.context.layoutKey), type: 'custom-widget', customWidget: customWidget }))
+                    };
+
+                    result.push(customWidgetMenu);
+
+                }
 
                 return result;
             };

@@ -280,8 +280,6 @@ describe('glDashboard', function() {
         expect(worskspaceScope.context.layoutKey).toEqual(screenName);
         expect(worskspaceScope.context.isAction).toEqual(false);
         expect(worskspaceScope.context.isScreen).toEqual(true);
-
-        expect(worskspaceScope.screens[0].items.length).toEqual(1);
     });
 
     it('should save and restore an action', function() {
@@ -295,6 +293,7 @@ describe('glDashboard', function() {
         worskspaceScope.saveLayout(screenName, screenName, false, true);
 
         render();
+
         worskspaceScope.reload();
         render();
 
@@ -325,7 +324,6 @@ describe('glDashboard', function() {
         expect(worskspaceScope.context.isAction).toEqual(true);
         expect(worskspaceScope.context.isScreen).toEqual(false);
 
-        expect(worskspaceScope.actions[0].items.length).toEqual(1);
 
     });
 
